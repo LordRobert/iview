@@ -48,7 +48,8 @@
                         notFoundText: this.localeNotFoundText
                     },
                     on: {
-                        'on-checked-keys-change': this.handleLeftCheckedKeysChange
+                        'on-checked-keys-change': this.handleLeftCheckedKeysChange,
+                        'item-selected': this.listItemSelected
                     }
                 }, vNodes),
 
@@ -235,6 +236,9 @@
             },
             handleLeftCheckedKeysChange (keys) {
                 this.leftCheckedKeys = keys;
+            },
+            listItemSelected (item) {
+                this.$emit('item-selected', item);
             },
             handleRightCheckedKeysChange (keys) {
                 this.rightCheckedKeys = keys;

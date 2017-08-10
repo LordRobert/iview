@@ -17,10 +17,10 @@
             <ul :class="prefixCls + '-content'">
                 <li
                     v-for="item in filterData"
-                    :class="itemClasses(item)"
-                    @click.prevent="select(item)">
-                    <Checkbox :value="isCheck(item)" :disabled="item.disabled"></Checkbox>
-                    <span v-html="showLabel(item)"></span>
+                    :class="itemClasses(item)">
+                    <Checkbox :value="isCheck(item)" @on-change="checkChange(item)" :disabled="item.disabled"></Checkbox>
+                    <span v-html="showLabel(item)" 
+                    @click.prevent="select(item)"></span>
                 </li>
                 <li :class="prefixCls + '-content-not-found'">{{ notFoundText }}</li>
             </ul>
@@ -52,7 +52,8 @@
             return {
                 showItems: [],
                 query: '',
-                showFooter: true
+                showFooter: true,
+                currentItem: {}
             };
         },
         watch: {
@@ -96,6 +97,7 @@
             itemClasses (item) {
                 return [
                     `${this.prefixCls}-content-item`,
+                    item == this.currentItem ? `${this.prefixCls}-content-zsl-item-selected` : '',
                     {
                         [`${this.prefixCls}-content-item-disabled`]: item.disabled
                     }
@@ -108,6 +110,11 @@
                 return this.checkedKeys.some(key => key === item.key);
             },
             select (item) {
+                if (item.disabled) return;
+                this.currentItem = item;
+                this.$emit('item-selected', item);
+            },
+            checkChange (item) {
                 if (item.disabled) return;
                 const index = this.checkedKeys.indexOf(item.key);
                 index > -1 ? this.checkedKeys.splice(index, 1) : this.checkedKeys.push(item.key);
